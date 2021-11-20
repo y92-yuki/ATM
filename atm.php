@@ -17,7 +17,7 @@ $stmt->bindValue(':balance',$balance, PDO::PARAM_INT);
 $res = $stmt->execute();
 
 if (!$res) {
-    // エラー
+    // error
 }
 
 $pdo = null;
