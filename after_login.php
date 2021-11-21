@@ -21,10 +21,10 @@
         if ($data[0]['password'] == $_POST['password']) {
             $true_message = 'ログインに成功しました';
         }else {
-        $false_message = 'ログインに失敗しました';
+            $false_message = 'パスワードを確認してください';
         }
     }else {
-        $false_message = 'パスワードを入力してください';
+        $false_message = 'ログインに失敗しました';
     }
 ?>
 
