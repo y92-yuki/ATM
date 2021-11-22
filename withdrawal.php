@@ -10,10 +10,14 @@ if (!empty($_POST['withdrawal_send'])) {
 
     $stmt = $pdo->prepare("SELECT * FROM account WHERE name = :name");
     $stmt->execute(['name' => $_SESSION['name']]);
-    $withdrawaled = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    // var_dump($withdrawaled);
+    $withdrawaled = $stmt->fetch(PDO::FETCH_ASSOC);
+    
 }
 
+if ($_POST['logout']) {
+    unset($_SESSION['name']);
+    header('Location: ./atm.php');
+} 
 ?>
 
 <!DOCTYPE html>
@@ -23,18 +27,22 @@ if (!empty($_POST['withdrawal_send'])) {
     <title>お引き出し</title>
     </head>
     <body>
-            <?php if (empty($_POST['withdrawal_send'])): ?>
+            <?php if(!empty($_POST['withdrawal_send'])): ?>
+                <p>¥<?= number_format($_POST['withdrawal_money']) ?>円引き出しました</p>
+                <p>引き出し後の残高は ¥<?= number_format($withdrawaled['balance']) ?>円です</p>
+                <form action="" method="post">
+                    <input type="submit" name="logout" value="完了">
+                </form>
+            <?php elseif ($_SESSION['name']): ?>
                 <form action='withdrawal.php' method=post>
                     <div>
                         <p>引き出し金額を入力してください</p><br>
                         <input type='number' name='withdrawal_money'>
                     </div>
-                        <input type='submit' name='withdrawal_send' value='確定'> <button type='button' onclick="location.href='atm.php'">取消</button>
+                        <input type='submit' name='withdrawal_send' value='確定'> <input type="submit" name="logout" value="取消">
                 </form>
-            <?php elseif(!empty($_POST['withdrawal_send'])): ?>
-                <p>¥<?= number_format($_POST['withdrawal_money']) ?>円引き出しました</p>
-                <p>引き出し後の残高は ¥<?= number_format($withdrawaled[0]['balance']) ?>円です</p>
-                <button type='button' onclick="location.href='atm.php'">終了</button>
+            <?php else: ?>
+                <?php header('Location: atm.php') ?>
             <?php endif ?>
     </body>
 </html>

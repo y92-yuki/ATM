@@ -12,21 +12,19 @@
 
     $stmt = $pdo->prepare("SELECT * FROM account WHERE id = :id");
         $stmt->execute(['id' => $_POST['id']]);
-        $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $data = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    $_SESSION['name'] = $data[0]['name'];
-    $created_date = substr($data[0]['created_at'],0,10);
+    $_SESSION['name'] = $data['name'];
+    $created_date = substr($data['created_at'],0,10);
     
 
-    if(!empty($_POST['password'])){
-        if ($data[0]['password'] == $_POST['password']) {
-            $true_message = 'ログインに成功しました';
-        }else {
-            $false_message = 'パスワードを確認してください';
-        }
-    }else {
-        $false_message = 'ログインに失敗しました';
-    }
+    if ($_POST['logout']) {
+        unset($_SESSION['name']);
+        header('Location: ./atm.php');
+    } 
+    
+
+            
 ?>
 
 <!DOCTYPE html>
@@ -36,8 +34,8 @@
         <title>ログイン後の画面</title>
     </head>
     <body>
-        <?php if (!empty($true_message)): ?>
-            <p>いらっしゃいませ  <?= $data[0]['name'] ?> 様</p>
+        <?php if ($_SESSION['name']): ?>
+            <p>いらっしゃいませ  <?= $data['name'] ?> 様</p>
             <p>口座作成日は <?= $created_date ?>です</p>
             <p>ご希望のお取引を選択してください</p><br>
             <div>
@@ -49,9 +47,13 @@
             <div>
                 <a href='balance.php'>残高照会</a>
             </div><br>
-            <button type='button' onclick='history.back()'>ログアウト</button>
-        <?php else: ?>
-            <?= $false_message ?>
+            <form action="" method="post">
+                <input type="submit" name="logout" value="ログアウト">
+            </form>
+            
+                
+         <?php elseif (!$_SESSION['name']): ?>
+            <?= 'ログインに失敗しました' ?>
             <br>
             <br>
             <button type='button' onclick='history.back()'>戻る</button>
