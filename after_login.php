@@ -15,7 +15,8 @@
         $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     $_SESSION['name'] = $data[0]['name'];
-    //$data[0]['password'];
+    $created_date = substr($data[0]['created_at'],0,10);
+    
 
     if(!empty($_POST['password'])){
         if ($data[0]['password'] == $_POST['password']) {
@@ -36,7 +37,8 @@
     </head>
     <body>
         <?php if (!empty($true_message)): ?>
-            <p>いらっしゃいませ <?= $data[0]['name'] ?> 様</p>
+            <p>いらっしゃいませ  <?= $data[0]['name'] ?> 様</p>
+            <p>口座作成日は <?= $created_date ?>です</p>
             <p>ご希望のお取引を選択してください</p><br>
             <div>
                 <a href='deposit.php'>お預け入れ</a>
